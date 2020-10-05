@@ -28,7 +28,7 @@ VALUES
   (5, 1, 'esqueleto', 'skeleton', 6),
   (6, 1, 'tela de arana', 'spider web', 7),
   (7, 1, 'gato negro', 'black cat', 8),
-  (8, 1, 'lápida', 'tombstone', null);
+  (8, 1, 'murcielago', 'bat', null);
 
 UPDATE "language" SET head = 1 WHERE id = 1;
 

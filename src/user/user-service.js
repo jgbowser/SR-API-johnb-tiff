@@ -65,7 +65,7 @@ const UserService = {
         ['esqueleto', 'skeleton', 6],
         ['tela de arana', 'spider web', 7],
         ['gato negro', 'black cat', 8],
-        ['lápida', 'tombstone', null],
+        ['murcielago', 'bat', null],
       ]
 
       const [languageHeadId] = await trx

@@ -182,7 +182,7 @@ describe('User Endpoints', function () {
             { original: 'esqueleto', translation: 'skeleton' },
             { original: 'tela de arana', translation: 'spider web' },
             { original: 'gato negro', translation: 'black cat' },
-            { original: 'lápida', translation: 'tombstone' },
+            { original: 'murcielago', translation: 'bat' },
           ]
         }
         return supertest(app)
