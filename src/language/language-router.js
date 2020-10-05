@@ -46,12 +46,17 @@ languageRouter
 languageRouter
   .get('/head', async (req, res, next) => {
     // implement me
+    // displays current word (which holds incorrect/correct answer)
+
     res.send('implement me!')
   })
 
 languageRouter
   .post('/guess', async (req, res, next) => {
     // implement me
+    // posts guess && verifies(?)
+    // increments page to next word
+
     res.send('implement me!')
   })
 
