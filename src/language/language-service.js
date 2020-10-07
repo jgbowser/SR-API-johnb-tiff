@@ -29,7 +29,7 @@ const LanguageService = {
       .where({ language_id })
   },
 
-  getStartingWord(db, user_id) {
+  getStartingWord(db, user_id) { //getHead
     return db
       .from('language')
       .join('word', 'language.head', '=', 'word.id')
@@ -39,6 +39,15 @@ const LanguageService = {
         'word.correct_count',
         'word.incorrect_count'
       )
+      .where('language.user_id', user_id)
+      .first()
+  },
+
+  getTranslation(db, user_id) {//comparing guess to words.translation
+    return db
+      .from('language') // cur table
+      .join('word', 'language.head', '=', 'word.id') // conjoining to word table
+      .select('word.translation')
       .where('language.user_id', user_id)
       .first()
   },

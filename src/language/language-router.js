@@ -1,6 +1,7 @@
 const express = require('express')
 const LanguageService = require('./language-service')
 const { requireAuth } = require('../middleware/jwt-auth')
+// const { _Node, LinkedList } = require('../LinkedList')
 
 const languageRouter = express.Router()
 
@@ -69,12 +70,28 @@ languageRouter
   })
 
 languageRouter
+  .use(requireAuth)
   .post('/guess', async (req, res, next) => {
-    // implement me
-    // posts guess && verifies(?)
-    // increments page to next word
-
+    // "nextWord": "test-next-word-from-generic-guess",
+    // "wordCorrectCount": 777,
+    // "wordIncorrectCount": 777,
+    // "totalScore": 777,
+    // "answer": "test-answer-from-generic-guess",
+    // "isCorrect": true -- render correct pg or incorrect pg
+    if (!req.body) {
+      return res.status(400).json({error: "Missing 'guess' in request body"})
+    }
+    try {
+      let { guess } = req.body
+      const translation = await LanguageService.getTranslation
+      if (guess === translation) {
+        // increment correct count & total score & memory value doubles
+      }
+      // increment incorrect count & change memory value to 1
     res.send('implement me!')
+    } catch (error) {
+      next(error)
+    }
   })
 
 module.exports = languageRouter
