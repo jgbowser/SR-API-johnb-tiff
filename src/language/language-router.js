@@ -44,11 +44,28 @@ languageRouter
   })
 
 languageRouter
+  .use(requireAuth)
   .get('/head', async (req, res, next) => {
-    // implement me
-    // displays current word (which holds incorrect/correct answer)
-
-    res.send('implement me!')
+    try {
+      // make a query to the language table (refrenceing user.id) to get total score
+      const word = await LanguageService.getStartingWord(req.app.get('db'), req.user.id)
+      // on the language table join the words table (refrencing the head)
+      // return something like {nextword: '', correctguess: '', incorrectguesses: '', totalScore: ''}
+      if(!word) {
+        res.status(404).json({
+          error: 'You don\'t have any words to study'
+        })
+      }
+      res.status(200).json({
+        nextWord: word.original,
+        wordCorrectCount: word.correct_count,
+        wordIncorrectCount: word.incorrect_count,
+        totalScore: word.total_score
+      })
+      next()
+    } catch (error) {
+      next(error)
+    }
   })
 
 languageRouter

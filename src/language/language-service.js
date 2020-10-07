@@ -28,6 +28,20 @@ const LanguageService = {
       )
       .where({ language_id })
   },
+
+  getStartingWord(db, user_id) {
+    return db
+      .from('language')
+      .join('word', 'language.head', '=', 'word.id')
+      .select(
+        'language.total_score',
+        'word.original',
+        'word.correct_count',
+        'word.incorrect_count'
+      )
+      .where('language.user_id', user_id)
+      .first()
+  },
 }
 
 module.exports = LanguageService
