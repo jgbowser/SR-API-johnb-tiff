@@ -4,6 +4,7 @@ const { requireAuth } = require('../middleware/jwt-auth')
 // const { _Node, LinkedList } = require('../LinkedList')
 
 const languageRouter = express.Router()
+const jsonBodyParser = express.json()
 
 languageRouter
   .use(requireAuth)
@@ -49,7 +50,7 @@ languageRouter
   .get('/head', async (req, res, next) => {
     try {
       // make a query to the language table (refrenceing user.id) to get total score
-      const word = await LanguageService.getStartingWord(req.app.get('db'), req.user.id)
+      const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
       // on the language table join the words table (refrencing the head)
       // return something like {nextword: '', correctguess: '', incorrectguesses: '', totalScore: ''}
       if(!word) {
@@ -71,24 +72,44 @@ languageRouter
 
 languageRouter
   .use(requireAuth)
-  .post('/guess', async (req, res, next) => {
+  .post('/guess', jsonBodyParser, async (req, res, next) => {
     // "nextWord": "test-next-word-from-generic-guess",
     // "wordCorrectCount": 777,
     // "wordIncorrectCount": 777,
     // "totalScore": 777,
     // "answer": "test-answer-from-generic-guess",
     // "isCorrect": true -- render correct pg or incorrect pg
-    if (!req.body) {
+    //console.log(req.language)
+    if (!req.body.guess) {
       return res.status(400).json({error: "Missing 'guess' in request body"})
     }
     try {
       let { guess } = req.body
-      const translation = await LanguageService.getTranslation
-      if (guess === translation) {
+      const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
+      if (guess === word.translation) {
         // increment correct count & total score & memory value doubles
+        const wordValues = {
+          'correct_count': word.correct_count + 1,
+          'memory_value': word.memory_value * 2
+        }
+        const langValue = req.language.total_score + 1
+        const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
+        console.log(updatedWordRes)
+        
+      } else if (guess !== word.translation) {
+        // increment incorrect count & change memory value to 1
+        const wordValues = {
+          'incorrect_count': word.incorrect_count + 1,
+          'memory_value': 1
+        }
+        const langValue = null
+
+        const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
+        updatedWordRes.language.total_score = req.language.total_score
+        console.log(updatedWordRes)
       }
-      // increment incorrect count & change memory value to 1
-    res.send('implement me!')
+      
+      res.send('implement me!')
     } catch (error) {
       next(error)
     }
