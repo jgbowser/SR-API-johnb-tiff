@@ -72,13 +72,6 @@ languageRouter
 languageRouter
   .use(requireAuth)
   .post('/guess', jsonBodyParser, async (req, res, next) => {
-    // "nextWord": "test-next-word-from-generic-guess",
-    // "wordCorrectCount": 777,
-    // "wordIncorrectCount": 777,
-    // "totalScore": 777,
-    // "answer": "test-answer-from-generic-guess",
-    // "isCorrect": true -- render correct pg or incorrect pg
-    //console.log(req.language)
     if (!req.body.guess) {
       return res.status(400).json({error: "Missing 'guess' in request body"})
     }
@@ -98,9 +91,8 @@ languageRouter
         list.head.value.incorrect_count++
         list.head.value.memory_value = 1
       }
-      //console.log(list.head, list.map())
       list.moveNode(list.head.value.memory_value)
-      //console.log(list.map())
+      
       await LanguageService.updateDB(req.app.get('db'), list)
 
       res.json({
@@ -118,31 +110,3 @@ languageRouter
   })
 
 module.exports = languageRouter
-
-
-// let { guess } = req.body
-// const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
-// if (guess === word.translation) {
-//   // increment correct count & total score & memory value doubles
-//   const wordValues = {
-//     'correct_count': word.correct_count + 1,
-//     'memory_value': word.memory_value * 2
-//   }
-//   const langValue = req.language.total_score + 1
-//   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
-//   console.log(updatedWordRes)
-        
-// } else if (guess !== word.translation) {
-//   // increment incorrect count & change memory value to 1
-//   const wordValues = {
-//     'incorrect_count': word.incorrect_count + 1,
-//     'memory_value': 1
-//   }
-//   const langValue = null
-
-//   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
-//   updatedWordRes.language.total_score = req.language.total_score
-//   console.log(updatedWordRes)
-// }
-      
-// res.send('implement me!')
