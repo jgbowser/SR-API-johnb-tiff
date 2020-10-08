@@ -1,3 +1,6 @@
+
+const { _Node, LinkedList } = require('../LinkedList')
+
 const LanguageService = {
   getUsersLanguage(db, user_id) {
     return db
@@ -45,6 +48,28 @@ const LanguageService = {
       .first()
   },
 
+  populateList(language, words) {  
+    const list = new LinkedList({
+      id: language.id,
+      name: language.name,
+      total_score: language.total_score,
+    })
+    let word = words.find(word => word.id === language.head)   // populates lannguageId, name, total and inserts at head of list
+    list.insertFirst(word) 
+
+    for (let i = 0; i < words.length; i++) {
+      if (word.next) {
+        word = words.find( w => w.id === word.next)
+        list.insert(word)
+      }
+    }
+    return list
+  }
+
+  updateDB(db, list) {
+
+  }
+
   // getTranslation(db, user_id) {//comparing guess to words.translation
   //   return db
   //     .from('language') // cur table
@@ -54,25 +79,25 @@ const LanguageService = {
   //     .first()
   // },
 
-  updateScores(db, user_id, wordValues, langValue, wordId) {
-    return db.transaction(async trx => {
-      let language = {}
-      if(langValue) {
-        [language] = await trx
-          .from('language')
-          .where('user_id', user_id)
-          .update({total_score: langValue}, ['total_score'])
-      }
+  // updateScores(db, user_id, wordValues, langValue, wordId) {
+  //   return db.transaction(async trx => {
+  //     let language = {}
+  //     if(langValue) {
+  //       [language] = await trx
+  //         .from('language')
+  //         .where('user_id', user_id)
+  //         .update({total_score: langValue}, ['total_score'])
+  //     }
 
-      const [word] = await trx
-        .from('word')
-        .where('id', wordId)
-        .update(wordValues, ['correct_count', 'incorrect_count', 'memory_value'])
+  //     const [word] = await trx
+  //       .from('word')
+  //       .where('id', wordId)
+  //       .update(wordValues, ['correct_count', 'incorrect_count', 'memory_value'])
 
-      return {language, word}
-      //refrence tests to see what other information is to be added to the endpoint response, figure out how this can utilize the linked list
-    })
-  }
+  //     return {language, word}
+  //     //refrence tests to see what other information is to be added to the endpoint response, figure out how this can utilize the linked list
+  //   })
+  // }
 }
 
 module.exports = LanguageService

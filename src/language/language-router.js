@@ -1,7 +1,6 @@
 const express = require('express')
 const LanguageService = require('./language-service')
 const { requireAuth } = require('../middleware/jwt-auth')
-// const { _Node, LinkedList } = require('../LinkedList')
 
 const languageRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -84,35 +83,56 @@ languageRouter
       return res.status(400).json({error: "Missing 'guess' in request body"})
     }
     try {
-      let { guess } = req.body
-      const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
-      if (guess === word.translation) {
-        // increment correct count & total score & memory value doubles
-        const wordValues = {
-          'correct_count': word.correct_count + 1,
-          'memory_value': word.memory_value * 2
-        }
-        const langValue = req.language.total_score + 1
-        const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
-        console.log(updatedWordRes)
-        
-      } else if (guess !== word.translation) {
-        // increment incorrect count & change memory value to 1
-        const wordValues = {
-          'incorrect_count': word.incorrect_count + 1,
-          'memory_value': 1
-        }
-        const langValue = null
+      const words = await LanguageService.getLanguageWords(req.app.get('db'), req.language.id)
+      const list = LanguageService.populateList(req.language, words)
 
-        const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
-        updatedWordRes.language.total_score = req.language.total_score
-        console.log(updatedWordRes)
+      const node = list.head
+      const correct = node.value.translation.toLowerCase() === req.body.guess.toLowerCase()
+
+      if (correct) {
+        list.total_score++
+        list.head.value.correct_count++
+        list.head.value.memory_value = list.head.value.memory_value * 2
+      } else {
+        list.head.value.incorrect_count++
+        list.head.value.memory_value = 1
       }
-      
-      res.send('implement me!')
+
+      await list.moveNode(list.head.value.memory_value)
+      //update DB
+
     } catch (error) {
       next(error)
     }
   })
 
 module.exports = languageRouter
+
+
+
+   // let { guess } = req.body
+      // const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
+      // if (guess === word.translation) {
+      //   // increment correct count & total score & memory value doubles
+      //   const wordValues = {
+      //     'correct_count': word.correct_count + 1,
+      //     'memory_value': word.memory_value * 2
+      //   }
+      //   const langValue = req.language.total_score + 1
+      //   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
+      //   console.log(updatedWordRes)
+        
+      // } else if (guess !== word.translation) {
+      //   // increment incorrect count & change memory value to 1
+      //   const wordValues = {
+      //     'incorrect_count': word.incorrect_count + 1,
+      //     'memory_value': 1
+      //   }
+      //   const langValue = null
+
+      //   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
+      //   updatedWordRes.language.total_score = req.language.total_score
+      //   console.log(updatedWordRes)
+      // }
+      
+      // res.send('implement me!')
