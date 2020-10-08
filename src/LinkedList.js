@@ -28,19 +28,42 @@ class LinkedList {
       tempNode.next = new _Node(item, null);
     }
   }
+	
+  findTail() {
+    let tail = this.head
+
+    while(tail.next) {
+      tail = tail.next
+    }
+    return tail
+  }
+
+  getNodeAt(position) {
+    let count = 0
+    let node = this.head
+    
+    while ((count < position) && node) {
+      node = node.next
+      count++
+    }
+    return node
+  }
 
   insertAt(newItem, i) {
-    let currNode = this.head
-    if (i === 0) {
-      return this.head = new _Node(newItem, null)
+    let nodeBeforeInsert = this.getNodeAt(i - 1)
+
+    if(!nodeBeforeInsert) {
+      return this.insertLast(newItem)
     }
-    for (let j = 1; j < i; j++) {
-      if (currNode.next === null) {
-        return currNode.next = new _Node(newItem, currNode.next)
-      }
-      currNode = currNode.next
-    }
-    currNode.next = new _Node(newItem, currNode.next)
+
+    let newNode = new _Node(
+      newItem,
+      nodeBeforeInsert.next
+    )
+    newNode.value.next = nodeBeforeInsert.value.next
+    nodeBeforeInsert.next = newNode
+    this.head.value.next = this.head.next.value.id
+    //console.log('NEW NEW NEW NEW NEW', newNode, 'HEAD HEAD HEAD HEAD HEAD ', this.head)
   }
 
   insert(item) {

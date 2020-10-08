@@ -97,8 +97,9 @@ languageRouter
         list.head.value.incorrect_count++
         list.head.value.memory_value = 1
       }
-      console.log(list.head, list.map())
+      //console.log(list.head, list.map())
       await list.moveNode(list.head.value.memory_value)
+      //console.log(list.map())
       await LanguageService.updateDB(req.app.get('db'), list)
 
       res.json({

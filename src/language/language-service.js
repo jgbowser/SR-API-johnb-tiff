@@ -52,10 +52,11 @@ const LanguageService = {
     const list = new LinkedList(language.total_score, language.name, language.id)
     let word = words.find(word => word.id === language.head)   // populates lannguageId, name, total and inserts at head of list
     list.insertFirst(word) 
-
+    //console.log('POPULATE HEAD', word)
     for (let i = 0; i < words.length; i++) {
       if (word.next) {
         word = words.find( w => w.id === word.next)
+        //console.log('POPULATE WORD', word)
         list.insert(word)
       }
     }
@@ -74,6 +75,7 @@ const LanguageService = {
       
       const wordList = list.map()
       await wordList.forEach(word => {
+        console.log(word.value.id)
         trx('word')
           .where('id', word.id)
           .update({
