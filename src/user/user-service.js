@@ -42,7 +42,7 @@ const UserService = {
     }
   },
   populateUserWords(db, user_id) {
-    return db. tion(async trx => {
+    return db.transaction(async trx => {
       const [languageId] = await trx
         .into('language')
         .insert([

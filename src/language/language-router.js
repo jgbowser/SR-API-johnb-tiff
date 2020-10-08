@@ -87,19 +87,28 @@ languageRouter
       const list = LanguageService.populateList(req.language, words)
 
       const node = list.head
-      const correct = node.value.translation.toLowerCase() === req.body.guess.toLowerCase()
+      const isCorrect = node.value.translation.toLowerCase() === req.body.guess.toLowerCase()
 
-      if (correct) {
+      if (isCorrect) {
         list.total_score++
         list.head.value.correct_count++
-        list.head.value.memory_value = list.head.value.memory_value * 2
+        list.head.value.memory_value = node.value.memory_value * 2
       } else {
         list.head.value.incorrect_count++
         list.head.value.memory_value = 1
       }
-
+      console.log(list.head, list.map())
       await list.moveNode(list.head.value.memory_value)
-      //update DB
+      await LanguageService.updateDB(req.app.get('db'), list)
+
+      res.json({
+        nextWord: list.head.value.original, 
+        wordCorrectCount: list.head.value.correct_count,
+        wordIncorrectCount: list.head.value.incorrect_count,
+        totalScore: list.total_score,
+        answer: node.value.translation,
+        isCorrect
+      })
 
     } catch (error) {
       next(error)
@@ -109,30 +118,29 @@ languageRouter
 module.exports = languageRouter
 
 
-
-   // let { guess } = req.body
-      // const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
-      // if (guess === word.translation) {
-      //   // increment correct count & total score & memory value doubles
-      //   const wordValues = {
-      //     'correct_count': word.correct_count + 1,
-      //     'memory_value': word.memory_value * 2
-      //   }
-      //   const langValue = req.language.total_score + 1
-      //   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
-      //   console.log(updatedWordRes)
+// let { guess } = req.body
+// const word = await LanguageService.getCurrentWord(req.app.get('db'), req.user.id)
+// if (guess === word.translation) {
+//   // increment correct count & total score & memory value doubles
+//   const wordValues = {
+//     'correct_count': word.correct_count + 1,
+//     'memory_value': word.memory_value * 2
+//   }
+//   const langValue = req.language.total_score + 1
+//   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
+//   console.log(updatedWordRes)
         
-      // } else if (guess !== word.translation) {
-      //   // increment incorrect count & change memory value to 1
-      //   const wordValues = {
-      //     'incorrect_count': word.incorrect_count + 1,
-      //     'memory_value': 1
-      //   }
-      //   const langValue = null
+// } else if (guess !== word.translation) {
+//   // increment incorrect count & change memory value to 1
+//   const wordValues = {
+//     'incorrect_count': word.incorrect_count + 1,
+//     'memory_value': 1
+//   }
+//   const langValue = null
 
-      //   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
-      //   updatedWordRes.language.total_score = req.language.total_score
-      //   console.log(updatedWordRes)
-      // }
+//   const updatedWordRes = await LanguageService.updateScores(req.app.get('db'), req.user.id, wordValues, langValue, req.language.head)
+//   updatedWordRes.language.total_score = req.language.total_score
+//   console.log(updatedWordRes)
+// }
       
-      // res.send('implement me!')
+// res.send('implement me!')

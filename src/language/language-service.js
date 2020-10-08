@@ -49,11 +49,7 @@ const LanguageService = {
   },
 
   populateList(language, words) {  
-    const list = new LinkedList({
-      id: language.id,
-      name: language.name,
-      total_score: language.total_score,
-    })
+    const list = new LinkedList(language.total_score, language.name, language.id)
     let word = words.find(word => word.id === language.head)   // populates lannguageId, name, total and inserts at head of list
     list.insertFirst(word) 
 
@@ -64,10 +60,30 @@ const LanguageService = {
       }
     }
     return list
-  }
+  },
 
   updateDB(db, list) {
-
+    return db.transaction(async trx => {
+      
+      await trx('language')
+        .where('id', list.id)
+        .update({
+          total_score: list.total_score,
+          head: list.head.value.id
+        })
+      
+      const wordList = list.map()
+      await wordList.forEach(word => {
+        trx('word')
+          .where('id', word.id)
+          .update({
+            correct_count: word.value.correct_count,
+            incorrect_count: word.value.incorrect_count,
+            memory_value: word.value.memory_value,
+            next: word.next ? word.next.value.id : null
+          })
+      })
+    })
   }
 
   // getTranslation(db, user_id) {//comparing guess to words.translation
