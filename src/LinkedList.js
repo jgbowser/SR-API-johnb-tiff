@@ -60,10 +60,7 @@ class LinkedList {
       newItem,
       nodeBeforeInsert.next
     )
-    newNode.value.next = nodeBeforeInsert.value.next
     nodeBeforeInsert.next = newNode
-    this.head.value.next = this.head.next.value.id
-    //console.log('NEW NEW NEW NEW NEW', newNode, 'HEAD HEAD HEAD HEAD HEAD ', this.head)
   }
 
   insert(item) {

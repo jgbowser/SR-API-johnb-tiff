@@ -83,7 +83,8 @@ languageRouter
       return res.status(400).json({error: "Missing 'guess' in request body"})
     }
     try {
-      const words = await LanguageService.getLanguageWords(req.app.get('db'), req.language.id)
+      const words = await LanguageService.getLanguageWords(req.app.get('db'), req.language.id) //can moce into poplist argument
+      console.log('GET LANGUAGE WORDS', words)
       const list = LanguageService.populateList(req.language, words)
 
       const node = list.head
@@ -98,7 +99,7 @@ languageRouter
         list.head.value.memory_value = 1
       }
       //console.log(list.head, list.map())
-      await list.moveNode(list.head.value.memory_value)
+      list.moveNode(list.head.value.memory_value)
       //console.log(list.map())
       await LanguageService.updateDB(req.app.get('db'), list)
 

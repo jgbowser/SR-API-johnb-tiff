@@ -48,43 +48,38 @@ const LanguageService = {
       .first()
   },
 
-  populateList(language, words) {  
+  populateList(language, words) {
     const list = new LinkedList(language.total_score, language.name, language.id)
     let word = words.find(word => word.id === language.head)   // populates lannguageId, name, total and inserts at head of list
-    list.insertFirst(word) 
+    list.insertFirst(word)
     //console.log('POPULATE HEAD', word)
-    for (let i = 0; i < words.length; i++) {
-      if (word.next) {
-        word = words.find( w => w.id === word.next)
-        //console.log('POPULATE WORD', word)
-        list.insert(word)
-      }
+    while (word.next) {
+      word = words.find(w => w.id === word.next)
+      //console.log('POPULATE WORD', word)
+      list.insert(word)
     }
     return list
   },
 
   updateDB(db, list) {
     return db.transaction(async trx => {
-      
+
       await trx('language')
         .where('id', list.id)
         .update({
           total_score: list.total_score,
           head: list.head.value.id
         })
-      
+
       const wordList = list.map()
-      await wordList.forEach(word => {
-        console.log(word.value.id)
-        trx('word')
-          .where('id', word.id)
-          .update({
-            correct_count: word.value.correct_count,
-            incorrect_count: word.value.incorrect_count,
-            memory_value: word.value.memory_value,
-            next: word.next ? word.next.value.id : null
-          })
-      })
+      await Promise.all(wordList.map(word => trx('word')
+        .where('id', word.value.id)
+        .update({
+          correct_count: word.value.correct_count,
+          incorrect_count: word.value.incorrect_count,
+          memory_value: word.value.memory_value,
+          next: word.next ? word.next.value.id : null
+        })))
     })
   }
 
