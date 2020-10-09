@@ -81,8 +81,8 @@ The '/language/guess' POST endpoint uses the auth token, updates the database an
         "wordCorrectCount": "grandmother",
         "wordIncorrectCount": "0",
         "totalScore": "1",
-        "answer": "granmother",
-        "isCorrect": "true"
+        "answer": "grandmother",
+        "isCorrect": true
 }
 ```
 Successful GET's return a `200 OK` response.  
