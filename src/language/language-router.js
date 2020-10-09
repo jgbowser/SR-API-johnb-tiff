@@ -38,7 +38,7 @@ languageRouter
         language: req.language,
         words,
       })
-      next()
+      
     } catch (error) {
       next(error)
     }
@@ -94,7 +94,7 @@ languageRouter
       
       await LanguageService.updateDB(req.app.get('db'), list)
 
-      res.json({
+      res.status(200).json({
         nextWord: list.head.value.original, 
         wordCorrectCount: list.head.value.correct_count,
         wordIncorrectCount: list.head.value.incorrect_count,
@@ -102,7 +102,7 @@ languageRouter
         answer: node.value.translation,
         isCorrect
       })
-
+      next()
     } catch (error) {
       next(error)
     }
