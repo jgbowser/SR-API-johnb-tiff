@@ -76,8 +76,7 @@ languageRouter
       return res.status(400).json({error: "Missing 'guess' in request body"})
     }
     try {
-      const words = await LanguageService.getLanguageWords(req.app.get('db'), req.language.id) //can moce into poplist argument
-      console.log('GET LANGUAGE WORDS', words)
+      const words = await LanguageService.getLanguageWords(req.app.get('db'), req.language.id)
       const list = LanguageService.populateList(req.language, words)
 
       const node = list.head
