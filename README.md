@@ -43,7 +43,7 @@ The '/language' USE endpoint validates user's auth token and responds with user'
         "language.user_id,"
         "language.head,"
         "language.total_score,"
-      )
+      
 }
 ```
 Successful USE's return a `200 OK` response.  
@@ -66,9 +66,9 @@ Successful GET's return a `200 OK` response.
 The '/language/head' GET endpoint uses the auth token and responds with nextWord, wordCorrectCount, wordIncorrectCount, and totalScore.  
 ```json
 {
-        "nextWord: word.original",
-        "wordCorrectCount: word.correct_count",
-        "wordIncorrectCount: word.incorrect_count",
+        "nextWord: word.original,"
+        "wordCorrectCount: word.correct_count,"
+        "wordIncorrectCount: word.incorrect_count,"
         "totalScore: word.total_score"
 }
 ```
