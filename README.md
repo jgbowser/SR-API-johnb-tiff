@@ -11,7 +11,7 @@ Spaced repetition is an advanced learning technique that enhances ones learning 
 
 ### '/user'
 The '/user' endpoint is designed to create new user account and collect a Token for a registered user.  
-The POST command, '/user' accepts a  name, username, and password. 
+The POST command on '/user' accepts a  name, username, and password.  
 ```json
 {
     "name": "Jane Doe",
@@ -19,11 +19,73 @@ The POST command, '/user' accepts a  name, username, and password.
     "password": "password123!"
 }
 ```
-Successful POST's return a `200 OK` response and assign a user_id.
+Successful POST's return a `200 OK` response and assign a user_id.  
 
 ### '/auth'
+The '/auth' endpoint validates user login allows user access via an auth token.  
+The POST command on '/auth' accepts a username and password.  
+```json
+{
+    "username": "JaneD@example.com",
+    "password": "password123!"
+}
+```
+Successful POST's return a `200 OK` response and assign a jwt-token.  
+
+The PUT command on '/auth' accepts a username and password and updates the jwt-token on each login or every three hours.  
 
 ### '/language'
+The '/language' USE endpoint validates user's auth token and responds with user's language data from database, which in turn gives access to the word data.  
+```json
+{
+        "language.id,"
+        "language.name,"
+        "language.user_id,"
+        "language.head,"
+        "language.total_score,"
+      )
+}
+```
+Successful USE's return a `200 OK` response.  
+
+The '/language' GET endpoint responds with data from word table.  
+```json
+{
+        "id,"
+        "language_id,"
+        "original,"
+        "translation,"
+        "next,"
+        "memory_value,"
+        "correct_count,"
+        "incorrect_count,"
+}
+```
+Successful GET's return a `200 OK` response.  
+
+The '/language/head' GET endpoint uses the auth token and responds with nextWord, wordCorrectCount, wordIncorrectCount, and totalScore.  
+```json
+{
+        "nextWord: word.original",
+        "wordCorrectCount: word.correct_count",
+        "wordIncorrectCount: word.incorrect_count",
+        "totalScore: word.total_score"
+}
+```
+Successful GET's return a `200 OK` response.  
+
+The '/language/guess' POST endpoint uses the auth token, updates the database and responds with nextWord, wordCorrectCount, wordIncorrectCount, totalScore, answer, and isCorrect.  
+```json
+{
+        "nextWord": "abuela",
+        "wordCorrectCount": "grandmother",
+        "wordIncorrectCount": "0",
+        "totalScore": "1",
+        "answer": "granmother",
+        "isCorrect": "true"
+}
+```
+Successful GET's return a `200 OK` response.  
 
 ### Tech Stack:  
 Back End: Express, JavaScript, PostgreSQL, Heroku, Mocha & Chai
