@@ -1,52 +1,29 @@
-# Spaced repetition API!
+# Spaced Repetition: Spanish SRS
+### by [John Bowser](https://github.com/jgbowser) and [Tiffany Summerford](https://github.com/breakfastatiffs)   
+[Spanish SRS](https://language-spaced-repetition.vercel.app/register) ||
+[Client GitHub](https://github.com/thinkful-ei-quail/SR-Client-johnb-tiff) ||
+[Server GitHub](https://github.com/thinkful-ei-quail/SR-API-johnb-tiff)  
+ 
+### About:  
+Spaced repetition is an advanced learning technique that enhances ones learning through an algorithm based upon repetition. The learner is quizzed on a sequence of words and when the learner answers incorrectly, they will see the word within a shorter time period versus if they answer correctly, they will see the word in a longer time period. With the number of Spanish speakers on the rise and halloween right around the corner, Spanish SRS was built with amusement and utility in mind.  
 
-## Local dev setup
+** API's base url: https://murmuring-shelf-10969.herokuapp.com/ **
 
-If using user `dunder-mifflin`:
-
-```bash
-mv example.env .env
-createdb -U dunder-mifflin spaced_repetition
-createdb -U dunder-mifflin spaced_repetition_test
+### '/user'
+The '/user' endpoint is designed to create new user account and collect a Token for a registered user.  
+The POST command, '/user' accepts a  name, username, and password. 
+```json
+{
+    "name": "Jane Doe",
+    "username": "JaneD@example.com",
+    "password": "password123!"
+}
 ```
+Successful POST's return a `200 OK` response and assign a user_id.
 
-If your `dunder-mifflin` user has a password be sure to set it in `.env` for all appropriate fields. Or if using a different user, update appropriately.
+### '/auth'
 
-```bash
-npm install
-npm run migrate
-env MIGRATION_DATABASE_NAME=spaced_repetition_test npm run migrate
-```
+### '/language'
 
-And `npm test` should work at this point
-
-## Configuring Postgres
-
-For tests involving time to run properly, configure your Postgres database to run in the UTC timezone.
-
-1. Locate the `postgresql.conf` file for your Postgres installation.
-   1. E.g. for an OS X, Homebrew install: `/usr/local/var/postgres/postgresql.conf`
-   2. E.g. on Windows, _maybe_: `C:\Program Files\PostgreSQL\11.2\data\postgresql.conf`
-   3. E.g  on Ubuntu 18.04 probably: '/etc/postgresql/10/main/postgresql.conf'
-2. Find the `timezone` line and set it to `UTC`:
-
-```conf
-# - Locale and Formatting -
-
-datestyle = 'iso, mdy'
-#intervalstyle = 'postgres'
-timezone = 'UTC'
-#timezone_abbreviations = 'Default'     # Select the set of available time zone
-```
-
-## Scripts
-
-Start the application `npm start`
-
-Start nodemon for the application `npm run dev`
-
-Run the tests mode `npm test`
-
-Run the migrations up `npm run migrate`
-
-Run the migrations down `npm run migrate -- 0`
+### Tech Stack:  
+Back End: Express, JavaScript, PostgreSQL, Heroku, Mocha & Chai
